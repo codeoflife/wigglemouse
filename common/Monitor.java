@@ -7,8 +7,8 @@ public class Monitor {
 	
 	public Monitor() {
 		this.hours = 0;
-		this.minutes = 10;
-		this.seconds = 0;
+		this.minutes = 0;
+		this.seconds = 30;
 	}
 
 	public synchronized void setTime(int hours, int minutes, int seconds) {

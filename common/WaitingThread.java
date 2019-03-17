@@ -15,6 +15,12 @@ import java.awt.Robot;
 public class WaitingThread extends Thread {
 	private Monitor monitor;
 	private Robot robot;
+	String status = "Not Wiggling";
+	
+	public String getStatus()
+	{
+		return status;
+	}
 
 	public WaitingThread(Monitor monitor) {
 		this.monitor = monitor;
@@ -27,36 +33,19 @@ public class WaitingThread extends Thread {
 	}
 
 	public void run() {
-		while (true) {
-			int secondsToSleep = (monitor.getHours()*60+monitor.getMinutes())*60+monitor.getSeconds();
-
-
+		System.out.println("Thread started");
+		while (true) 
+		{
+			int secondsToSleep = (monitor.getHours()*60+monitor.getMinutes())*60+monitor.getSeconds();		
+			status="Wiggling every "+secondsToSleep+" seconds";			
 			try {
-				for (int i = 0; i < secondsToSleep; i++) {
-					Point point = MouseInfo.getPointerInfo().getLocation();
-					int oldX = (int)point.getX();
-					int oldY = (int)point.getY();
-
-					Thread.sleep(1000);
-
-					point = MouseInfo.getPointerInfo().getLocation();
-					int newX = (int)point.getX();
-					int newY = (int)point.getY();
-
-					if (newX != oldX || newY != oldY) {
-						throw new Exception();
-					}
-
-				}
-				wiggle();
-			} catch (InterruptedException e) {
-				/* Nothing wrong, the user has pressed the button 
-				 * which interrupts this thread
-				 */
-			} catch (Exception e) {
-				/* Nothing wrong, the user moved the mouse.
-				 * */
+				System.out.println("Going to sleep for "+secondsToSleep*1000+"ms");
+				Thread.sleep(secondsToSleep*1000);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
 			}
+			System.out.println("Wiggling.");
+			wiggle();
 		}
 	}
 
@@ -76,5 +65,13 @@ public class WaitingThread extends Thread {
 			e.printStackTrace();
 		}
 
+	}
+
+	public Monitor getMonitor() {
+		return monitor;
+	}
+
+	public void setMonitor(Monitor monitor) {
+		this.monitor = monitor;
 	}
 }
