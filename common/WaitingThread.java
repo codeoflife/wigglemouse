@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
+import java.awt.TrayIcon;
 
 /*
  * Waiting thread will sleep the time specified in the monitor by calling
@@ -16,6 +17,7 @@ public class WaitingThread extends Thread {
 	private Monitor monitor;
 	private Robot robot;
 	String status = "Not Wiggling";
+	private TrayIcon trayIcon=null; 
 	
 	public String getStatus()
 	{
@@ -34,15 +36,27 @@ public class WaitingThread extends Thread {
 
 	public void run() {
 		System.out.println("Thread started");
+		boolean interrupted=true;
+		int secondsToSleep = (monitor.getHours()*60+monitor.getMinutes())*60+monitor.getSeconds();	
+		
 		while (true) 
 		{
-			int secondsToSleep = (monitor.getHours()*60+monitor.getMinutes())*60+monitor.getSeconds();		
-			status="Wiggling every "+secondsToSleep+" seconds";			
+			if(interrupted)
+			{
+				secondsToSleep = (monitor.getHours()*60+monitor.getMinutes())*60+monitor.getSeconds();		
+				status="Wiggling every "+secondsToSleep+" seconds";
+				if(trayIcon!=null)
+				{
+					trayIcon.setToolTip(status);
+				}	
+				interrupted=false;
+			}
 			try {
 				System.out.println("Going to sleep for "+secondsToSleep*1000+"ms");
 				Thread.sleep(secondsToSleep*1000);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
+				interrupted=true;
 			}
 			System.out.println("Wiggling.");
 			wiggle();
@@ -50,12 +64,13 @@ public class WaitingThread extends Thread {
 	}
 
 	private void wiggle() {
-		Point point = MouseInfo.getPointerInfo().getLocation();
-		int x = (int)point.getX();
-		int y = (int)point.getY();
 
 
 		try {
+			Point point = MouseInfo.getPointerInfo().getLocation();
+			int x = (int)point.getX();
+			int y = (int)point.getY();
+			
 			robot.mouseMove(x, y+5);
 			Thread.sleep(50);
 			robot.mouseMove(x, y-5);
@@ -73,5 +88,13 @@ public class WaitingThread extends Thread {
 
 	public void setMonitor(Monitor monitor) {
 		this.monitor = monitor;
+	}
+
+	public TrayIcon getTrayIcon() {
+		return trayIcon;
+	}
+
+	public void setTrayIcon(TrayIcon trayIcon) {
+		this.trayIcon = trayIcon;
 	}
 }

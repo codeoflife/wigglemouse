@@ -163,6 +163,14 @@ public class TextDialog extends JDialog {
 		
 
 	}
+
+	public TrayIcon getTrayIcon() {
+		return trayIcon;
+	}
+
+	public void setTrayIcon(TrayIcon trayIcon) {
+		this.trayIcon = trayIcon;
+	}
 }
 
 /* Listeners */

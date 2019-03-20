@@ -8,7 +8,6 @@ import common.TextDialog;
 import common.WaitingThread;
 
 public class WiggleMouse {
-
 	public static void main(String[] args) {
 		System.out.println("Usage: java -jar wigglemouse [-interval hh:mm:ss]");
 		Monitor monitor = new Monitor();
@@ -56,6 +55,7 @@ public class WiggleMouse {
 		waitingThread.start();
 		
 		final TextDialog textDialog = new TextDialog(monitor, waitingThread);
+		waitingThread.setTrayIcon(textDialog.getTrayIcon());
 		textDialog.addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent e) {
 		    	textDialog.setVisible(false);
